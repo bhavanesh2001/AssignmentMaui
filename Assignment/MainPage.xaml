@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Assignment.ViewModels"
+             xmlns:models="clr-namespace:Assignment.Models"
+             x:DataType="vm:MainPageViewModel"
+             x:Class="Assignment.MainPage"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Common Style for All Buttons -->
+            <Style x:Key="CommonButtonStyle" TargetType="Button">
+                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="BorderColor" Value="LightGreen" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="BackgroundColor" Value="White" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowSpacing="6" RowDefinitions="Auto,Auto,Auto,* ,Auto,Auto">
+        <StackLayout BackgroundColor="#156082">
+            <Label Margin="20,0,0,0" HeightRequest="50" Text="Scanning App" TextColor="White"
+                   FontAttributes="Bold" FontSize="16" VerticalTextAlignment="Center"/>
+        </StackLayout>
+
+        <Grid ColumnDefinitions="200,*" RowDefinitions="40" Grid.Row="1">
+            <Button Style="{StaticResource CommonButtonStyle}"
+                    Command="{Binding ScanSelectedCommand}" Text="Scan" WidthRequest="80" FontAttributes="Bold" />
+            <Button Grid.Column="1"
+                    Style="{StaticResource CommonButtonStyle}"
+                    Command="{Binding DetailsCommand}" Text="Details" WidthRequest="70" HorizontalOptions="Start" />
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,50" IsVisible="{Binding IsScanning}">
+            <Entry Text="{Binding EntryText}" Background="Transparent" Placeholder="Enter Barcode.." Keyboard="Numeric"/>
+            <BoxView HeightRequest="1" BackgroundColor="LightGreen" VerticalOptions="End"/>
+            <ImageButton Command="{Binding ScanCommand}" Source="sample.png" Grid.Column="1" HeightRequest="30" WidthRequest="30"/>
+        </Grid>
+
+        <Border Grid.Row="3" Stroke="LightGreen">
+            <CollectionView SelectionMode="Single" SelectedItem="{Binding CurrentSelectedItem}" ItemsSource="{Binding CurrentBarCodes}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:BarCode">
+                        <Label Text="{Binding Code}" VerticalTextAlignment="Center" HeightRequest="40"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+        <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="4" RowDefinitions="40" ColumnSpacing="6">
+            <Button Style="{StaticResource CommonButtonStyle}" IsVisible="{Binding IsScanning}" Command="{Binding ClearCommand}" Text="Clear" WidthRequest="100"/>
+            <Button Style="{StaticResource CommonButtonStyle}" IsVisible="{Binding IsScanning}" Command="{Binding DeleteCommand}" Grid.Column="1" Text="Delete" WidthRequest="100" HorizontalOptions="Start"/>
+            <Button Style="{StaticResource CommonButtonStyle}" Grid.Column="2" HorizontalOptions="End" Text="{Binding CurrentBarCodes.Count}" Margin="0,0,30,0"/>
+        </Grid>
+
+        <Grid IsVisible="{Binding IsScanning}" VerticalOptions="End" ColumnDefinitions="*,*,*" Margin="0,0,0,20" Grid.Row="5">
+            <Button Style="{StaticResource CommonButtonStyle}" BorderColor="Black" TextColor="White" Command="{Binding ReloadCommand}" Text="Reload" Margin="8" BackgroundColor="#156082"/>
+            <Button Style="{StaticResource CommonButtonStyle}" BorderColor="Black" TextColor="White" Command="{Binding SubmitCommand}" Text="Submit" Grid.Column="1" Margin="8" BackgroundColor="#156082"/>
+            <Button Style="{StaticResource CommonButtonStyle}" BorderColor="Black" TextColor="White" Text="Next" Grid.Column="2" Margin="8" BackgroundColor="#156082"/>
+        </Grid>
+    </Grid>
+</ContentPage>
